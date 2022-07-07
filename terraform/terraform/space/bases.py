@@ -8,7 +8,7 @@ class SpaceBase(Thread):
     ################################################
     # O CONSTRUTOR DA CLASSE NÃO PODE SER ALTERADO #
     ################################################
-    def __init__(self, name, uranium, fuel, rockets):
+    def __init__(self, name, fuel, uranium, rockets):
         Thread.__init__(self)
         self.name = name
         self.uranium = 0

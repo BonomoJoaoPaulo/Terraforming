@@ -44,7 +44,7 @@ def main():
     alcantara = SpaceBase('ALCANTARA', 20000, 100, 1)
     canaveral_cape = SpaceBase('CANAVERAL CAPE', 40000, 500, 5)
     moscow = SpaceBase('MOSCOW', 40000, 500, 5)
-    moon = SpaceBase('MOON', 30000, 50, 2)
+    moon = SpaceBase('MOON', 30000, 150, 2)
 
     # Iniciando as threads das bases espaciais.
     alcantara.start()
