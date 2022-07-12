@@ -3,6 +3,8 @@ from threading import Thread, Lock
 from space.rocket import Rocket
 from random import choice
 
+from rockets.Launcher import Launcher
+
 oil_mutex = Lock()
 uranium_mutex = Lock()
 
@@ -82,6 +84,17 @@ class SpaceBase(Thread):
         globals.acquire_print()
         self.print_space_base_info()
         globals.release_print()
+
+        # Carregando as threads de lançamento dos foguetes
+        print('Lauching rockets...\n')
+        dragon = Launcher('DRAGON')
+        falcon = Launcher('FALCON')
+        lion = Launcher('LION')
+
+        # Iniciando as threads de lançamento dos foguetes
+        dragon.start()
+        falcon.start()
+        lion.start()
 
         while(globals.get_release_system() == False):
             pass
