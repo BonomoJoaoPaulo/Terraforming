@@ -1,7 +1,10 @@
 import globals
-from threading import Thread
+from threading import Thread, Lock
 from space.rocket import Rocket
 from random import choice
+
+oil_mutex = Lock()
+uranium_mutex = Lock()
 
 class SpaceBase(Thread):
 
@@ -50,11 +53,30 @@ class SpaceBase(Thread):
                 print("Invalid rocket name")
 
 
-    def refuel_oil():
-        pass
+    def refuel_oil(self, mines_resources):
+        oil = mines_resources['oil_earth']
 
-    def refuel_uranium():
-        pass   
+        missing_oil = self.constraints[1] - self.fuel
+        if oil.unities >= missing_oil:
+            print(oil.unities, "mine fuel")
+            oil_mutex.acquire()
+            oil.unities -= missing_oil
+            oil_mutex.release()
+            self.fuel += missing_oil
+            print(self.name, self.fuel, "fuel")
+
+    def refuel_uranium(self, mines_resources):
+        uranium = mines_resources['uranium_earth']
+
+        
+        missing_uranium = self.constraints[0] - self.uranium
+        if  uranium.unities >= missing_uranium:
+            print(uranium.unities, "mine uranium")
+            uranium_mutex.acquire()
+            uranium.unities -= missing_uranium
+            uranium_mutex.release()
+            self.uranium += missing_uranium
+            print(self.name, self.uranium, "uranium")
 
     def run(self):
         globals.acquire_print()
@@ -65,5 +87,8 @@ class SpaceBase(Thread):
             pass
 
         while(True):
-
-            pass
+            mines_resources = globals.get_mines_ref()
+            if self.fuel < self.constraints[1]:
+                self.refuel_oil(mines_resources)
+            if self.uranium < self.constraints[0]:
+                self.refuel_uranium(mines_resources)
