@@ -58,27 +58,26 @@ class SpaceBase(Thread):
     def refuel_oil(self, mines_resources):
         oil = mines_resources['oil_earth']
 
-        missing_oil = self.constraints[1] - self.fuel
-        if oil.unities >= missing_oil:
-            print(oil.unities, "mine fuel")
-            oil_mutex.acquire()
-            oil.unities -= missing_oil
-            oil_mutex.release()
-            self.fuel += missing_oil
-            print(self.name, self.fuel, "fuel")
+        print(oil.unities, "mine fuel")
+        oil_mutex.acquire()
+        self.fuel += oil.unities
+        oil.unities = 0
+        oil_mutex.release()
+        if self.fuel > self.constraints[1]:
+            self.fuel = self.constraints[1]
+        self.print_space_base_info()
 
     def refuel_uranium(self, mines_resources):
         uranium = mines_resources['uranium_earth']
 
-        
-        missing_uranium = self.constraints[0] - self.uranium
-        if  uranium.unities >= missing_uranium:
-            print(uranium.unities, "mine uranium")
-            uranium_mutex.acquire()
-            uranium.unities -= missing_uranium
-            uranium_mutex.release()
-            self.uranium += missing_uranium
-            print(self.name, self.uranium, "uranium")
+        print(uranium.unities, "mine uranium")
+        uranium_mutex.acquire()
+        self.uranium += uranium.unities
+        uranium.unities = 0
+        uranium_mutex.release()
+        if self.uranium > self.constraints[0]:
+            self.uranium = self.constraints[0]
+        self.print_space_base_info()
 
     def run(self):
         globals.acquire_print()
@@ -105,3 +104,6 @@ class SpaceBase(Thread):
                 self.refuel_oil(mines_resources)
             if self.uranium < self.constraints[0]:
                 self.refuel_uranium(mines_resources)
+            
+
+    
