@@ -5,8 +5,6 @@ from random import choice
 
 from rockets.Launcher import Launcher
 
-oil_mutex = Lock()
-uranium_mutex = Lock()
 
 class SpaceBase(Thread):
 
@@ -59,10 +57,10 @@ class SpaceBase(Thread):
         oil = mines_resources['oil_earth']
 
         print(oil.unities, "mine fuel")
-        oil_mutex.acquire()
+        globals.acquire_oil()
         self.fuel += oil.unities
         oil.unities = 0
-        oil_mutex.release()
+        globals.release_oil()
         if self.fuel > self.constraints[1]:
             self.fuel = self.constraints[1]
         self.print_space_base_info()
@@ -71,10 +69,10 @@ class SpaceBase(Thread):
         uranium = mines_resources['uranium_earth']
 
         print(uranium.unities, "mine uranium")
-        uranium_mutex.acquire()
+        globals.uranium_acquire()
         self.uranium += uranium.unities
         uranium.unities = 0
-        uranium_mutex.release()
+        globals.uranuim_release()
         if self.uranium > self.constraints[0]:
             self.uranium = self.constraints[0]
         self.print_space_base_info()

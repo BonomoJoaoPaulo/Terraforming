@@ -17,6 +17,25 @@ south_poles_locks = {}
 bases = {}
 mines = {}
 simulation_time = None
+oil_mutex = Lock()
+uranium_mutex = Lock()
+
+
+def acquire_oil():
+    global oil_mutex
+    oil_mutex.acquire()
+
+def release_oil():
+    global oil_mutex
+    oil_mutex.release()
+
+def uranium_acquire():
+    global uranium_mutex
+    uranium_mutex.acquire()
+
+def uranuim_release():
+    global uranium_mutex
+    uranium_mutex.release()
 
 def acquire_print():
     global mutex_print
