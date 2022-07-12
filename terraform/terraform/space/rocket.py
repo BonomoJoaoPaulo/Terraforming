@@ -1,6 +1,6 @@
 from random import randrange, random
 from time import sleep
-
+import globals as G
 
 class Rocket:
 
@@ -16,10 +16,29 @@ class Rocket:
             
 
     def nuke(self, planet): # Permitida a alteração
-        self.damage()
-        print(f"[EXPLOSION] - The {self.name} ROCKET reached the planet {planet.name} on North Pole")
-        print(f"[EXPLOSION] - The {self.name} ROCKET reached the planet {planet.name} on South Pole")
-        pass
+        rocket_damage = self.damage()
+        north_pole = random.randint(0,2)
+        if north_pole:
+            G.get_north_pole_lock(planet.name).acquire()
+            print(f"[EXPLOSION] - The {self.name} ROCKET reached the planet {planet.name} on North Pole")
+
+            G.planet_lock.acquire()
+            planet.nuke_detected(rocket_damage)
+            G.planet_lock.release()
+
+            G.get_north_pole_lock(planet.name).release()
+
+        else:
+            G.get_south_pole_lock(planet.name).acquire()    
+            print(f"[EXPLOSION] - The {self.name} ROCKET reached the planet {planet.name} on South Pole")
+
+            G.planet_lock.acquire()
+            planet.nuke_detected(rocket_damage)
+            G.planet_lock.release()
+
+            G.get_south_pole_lock(planet.name).release() 
+
+
     
     def voyage(self, planet): # Permitida a alteração (com ressalvas)
 
@@ -28,7 +47,10 @@ class Rocket:
         # usar essa função.
         self.simulation_time_voyage(planet)
         failure =  self.do_we_have_a_problem()
-        self.nuke(planet)
+        if not failure:
+            self.nuke(planet)
+
+        return
 
 
 
