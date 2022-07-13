@@ -1,5 +1,5 @@
 from threading import Thread
-import globals as G
+import globals
 
 class Planet(Thread):
 
@@ -19,10 +19,10 @@ class Planet(Thread):
         print(f"🪐 - [{self.name}] → {self.terraform}% UNINHABITABLE")
 
     def run(self):
-        G.create_planet_lock(self.name)
-        G.acquire_print()
+        globals.create_planet_lock(self.name)
+        globals.acquire_print()
         self.print_planet_info()
-        G.release_print()
+        globals.release_print()
 
-        while(G.get_release_system() == False):
+        while(globals.get_release_system() == False):
             pass

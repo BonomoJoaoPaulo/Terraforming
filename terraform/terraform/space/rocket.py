@@ -1,6 +1,6 @@
 from random import randrange, random
 from time import sleep
-import globals as G
+import globals
 
 class Rocket:
 
@@ -19,24 +19,24 @@ class Rocket:
         rocket_damage = self.damage()
         north_pole = random.randint(0,2)
         if north_pole:
-            G.get_north_pole_lock(planet.name).acquire()
+            globals.get_north_pole_lock(planet.name).acquire()
             print(f"[EXPLOSION] - The {self.name} ROCKET reached the planet {planet.name} on North Pole")
 
-            G.planet_lock.acquire()
+            globals.planet_lock.acquire()
             planet.nuke_detected(rocket_damage)
-            G.planet_lock.release()
+            globals.planet_lock.release()
 
-            G.get_north_pole_lock(planet.name).release()
+            globals.get_north_pole_lock(planet.name).release()
 
         else:
-            G.get_south_pole_lock(planet.name).acquire()    
+            globals.get_south_pole_lock(planet.name).acquire()    
             print(f"[EXPLOSION] - The {self.name} ROCKET reached the planet {planet.name} on South Pole")
 
-            G.planet_lock.acquire()
+            globals.planet_lock.acquire()
             planet.nuke_detected(rocket_damage)
-            G.planet_lock.release()
+            globals.planet_lock.release()
 
-            G.get_south_pole_lock(planet.name).release() 
+            globals.get_south_pole_lock(planet.name).release() 
 
 
     
