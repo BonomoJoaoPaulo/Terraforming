@@ -85,15 +85,15 @@ class SpaceBase(Thread):
         globals.release_print()
 
         # Carregando as threads de lançamento dos foguetes
-        print('Lauching rockets...\n')
-        dragon = Launcher('DRAGON')
-        falcon = Launcher('FALCON')
-        lion = Launcher('LION')
+        #print('Lauching rockets...\n')
+        #dragon = Launcher('DRAGON')
+        #falcon = Launcher('FALCON')
+        #lion = Launcher('LION')
 
         # Iniciando as threads de lançamento dos foguetes
-        dragon.start()
-        falcon.start()
-        lion.start()
+        #dragon.start()
+        #falcon.start()
+        #lion.start()
 
         while(globals.get_release_system() == False):
             pass

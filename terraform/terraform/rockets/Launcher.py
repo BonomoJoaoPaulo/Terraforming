@@ -6,9 +6,11 @@ from space.rocket import Rocket
 #para que as threads das bases lançadoras não fiquem travadas no sleep
 
 class Launcher(Thread):
-    def __init__(self, rocket_name):
+    def __init__(self, base, planet, rocket):
         Thread.__init__(self)
-        self.rocket = rocket_name
+        self.base = base
+        self.planet = planet
+        self.rocket = rocket
 
     def run(self):
-        Rocket(self.rocket)
+        self.rocket.launch(self.base, self.planet)
