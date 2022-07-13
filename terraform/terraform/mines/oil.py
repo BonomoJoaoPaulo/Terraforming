@@ -25,7 +25,9 @@ class Pipeline(Thread):
 
     def produce(self):
         if(self.unities < self.constraint):
+            globals.acquire_oil()
             self.unities += 17
+            globals.release_oil()
             self.print_pipeline()
         sleep(0.001)
 
