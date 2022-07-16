@@ -165,7 +165,7 @@ class SpaceBase(Thread):
         print(uranium.unities, "mine uranium")
         globals.uranium_acquire()
 
-        space_in_stock = self.constrainst[0] - self.uranium
+        space_in_stock = self.constraints[0] - self.uranium
         consumed = min(space_in_stock, uranium.unities)
 
         self.uranium += consumed
