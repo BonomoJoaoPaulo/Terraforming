@@ -252,7 +252,7 @@ class SpaceBase(Thread):
     
             foguetes = []
             foguetes.append("DRAGON")
-            if self.hasResourcesToCreateFalcon():
+            if self.Has_resources_to_create_falcon():
                 foguetes.append("FALCON")
 
             rocket_name = choice(foguetes)
