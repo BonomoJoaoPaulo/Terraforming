@@ -20,7 +20,7 @@ mines = {}
 simulation_time = None
 oil_mutex = Lock()
 uranium_mutex = Lock()
-handle_lion_mutex = Lock()
+handle_lion_sem = Semaphore(0)
 moon_need_resources = False
 
 resources_got_in_moon_Lock = Lock()
