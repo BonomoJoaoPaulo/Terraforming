@@ -18,26 +18,15 @@ class Rocket:
     def nuke(self, planet): # Permitida a alteração
         rocket_damage = self.damage()
         north_pole = random.randint(0,2)
+
         if north_pole:
-            globals.get_north_pole_lock(planet.name).acquire()
             print(f"[EXPLOSION] - The {self.name} ROCKET reached the planet {planet.name} on North Pole")
 
-            globals.planet_lock.acquire()
-            planet.nuke_detected(rocket_damage)
-            globals.planet_lock.release()
-
-            globals.get_north_pole_lock(planet.name).release()
-
-        else:
-            globals.get_south_pole_lock(planet.name).acquire()    
+            planet.nuke_detected(rocket_damage, "north")
+        else:    
             print(f"[EXPLOSION] - The {self.name} ROCKET reached the planet {planet.name} on South Pole")
 
-            globals.planet_lock.acquire()
-            planet.nuke_detected(rocket_damage)
-            globals.planet_lock.release()
-
-            globals.get_south_pole_lock(planet.name).release() 
-
+            planet.nuke_detected(rocket_damage, "south")
 
     
     def voyage(self, planet): # Permitida a alteração (com ressalvas)
