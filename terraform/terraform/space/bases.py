@@ -2,7 +2,6 @@ import globals
 from threading import Thread, Lock, Condition
 from space.rocket import Rocket
 from random import choice
-from rockets.Launcher import Launcher
 lock = Lock()
 moon_need_resources = Condition(lock)
 enough_resources_to_create_any_rocket = Condition(lock)
@@ -36,17 +35,20 @@ class SpaceBase(Thread):
                         globals.alc_sem.acquire()
                         self.fuel = self.fuel - 70
                         self.rockets += 1
+                        self.storage_rockets.append(Rocket('DRAGON'))
                     elif self.name == 'MOON':
                         if self.fuel >= 50:
                             globals.moon_sem.acquire()
                             self.fuel = self.fuel - 50
                             self.rockets += 1
+                            self.storage_rockets.append(Rocket('DRAGON'))
                         else:
                             moon_need_resources.notify()
                     elif self.fuel >= 100:
                         globals.capemoscow_sem.acquire()
                         self.fuel = self.fuel - 100
                         self.rockets += 1
+                        self.storage_rockets.append(Rocket('DRAGON'))
             
             case 'FALCON':
                 if self.uranium > 35:
@@ -55,17 +57,20 @@ class SpaceBase(Thread):
                         globals.alc_sem.acquire()
                         self.fuel = self.fuel - 100
                         self.rockets += 1
+                        self.storage_rockets.append(Rocket('FALCON'))
                     elif self.name == 'MOON':
                         if self.fuel >= 90:
                             globals.moon_sem.acquire()
                             self.fuel = self.fuel - 90
                             self.rockets += 1
+                            self.storage_rockets.append(Rocket('FALCON')) 
                         else:
                             moon_need_resources.notify()
                     elif self.fuel >= 120:
                         globals.capemoscow_sem.acquire()
                         self.fuel = self.fuel - 120
                         self.rockets += 1
+                        self.storage_rockets.append(Rocket('FALCON'))
 
             case 'LION':
                 if self.uranium > 35:
@@ -74,12 +79,24 @@ class SpaceBase(Thread):
                         globals.alc_sem.acquire()
                         self.fuel = self.fuel - 100
                         self.rockets += 1
+                        self.storage_rockets.append(Rocket('LION'))
                     elif self.fuel > 115:
                         globals.capemoscow_sem.acquire()
                         self.fuel = self.fuel - 115
                         self.rockets += 1
+                        self.storage_rockets.append(Rocket('LION'))
             case _:
                 print("Invalid rocket name")
+
+    def base_launch_rocket(self):
+        rocket = self.storage_rockets.pop(0)
+        thread = Thread(target=self.voyageController, args=(rocket,))
+
+
+    def voyageController(self, rocket):
+        rocket.
+
+
 
     def refuel_oil(self, mines_resources):
         oil = mines_resources['oil_earth']
@@ -110,6 +127,8 @@ class SpaceBase(Thread):
         self.print_space_base_info()
         globals.release_print()
 
+        self.storage_rockets = []
+
         while(globals.get_release_system() == False):
             pass
 
@@ -127,5 +146,5 @@ class SpaceBase(Thread):
                 #lion_rocket_thread.start()
                 #refuel moon with resources
     
-            rocket_name = choice(['FALCON', 'DRAGON'])  
+            rocket_name = choice(['FALCON', 'DRAGON'])
             self.consume_resources_to_create_rocket(rocket_name)
