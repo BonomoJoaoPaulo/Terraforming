@@ -256,9 +256,10 @@ class SpaceBase(Thread):
                 foguetes.append("FALCON")
 
             rocket_name = choice(foguetes)
-            print('Chamou o consume resources')
-            rocket = self.create_rocket(rocket_name)
-            print('Chamou o lauch rocket')
+            print(f'Criando Rocket, {self.rockets}, {len(self.storage_rockets)}')
+            self.create_rocket(rocket_name)
+            print(f'Criando Rocket, {self.rockets}, {len(self.storage_rockets)}')
+
             self.base_launch_rocket()
 
     def Moon_has_resources_to_attack(self):
