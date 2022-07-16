@@ -59,7 +59,7 @@ def get_planets_ref():
     global planets
     return planets
 
-def create_planet_lock(planet_name):
+def create_planet_and_poles_locks(planet_name):
     global planets_locks
     global north_poles_locks
     global south_poles_locks

@@ -129,4 +129,3 @@ class SpaceBase(Thread):
     
             rocket_name = choice(['FALCON', 'DRAGON'])  
             self.consume_resources_to_create_rocket(rocket_name)
-                      
