@@ -1,4 +1,5 @@
-from threading import Lock
+from telnetlib import SE
+from threading import Lock, Semaphore
 
 #  A total alteração deste arquivo é permitida.
 #  Lembre-se de que algumas variáveis globais são setadas no arquivo simulation.py
@@ -8,6 +9,7 @@ from threading import Lock
 #  muito utilizado em frontend em libraries como o React, utilizam a filosofia de um store
 #  global de estados da aplicação e está presente em sistemas robustos pelo mundo.
 
+able_to_start = 120
 release_system = False
 mutex_print = Lock()
 planets = {}
@@ -19,6 +21,10 @@ mines = {}
 simulation_time = None
 oil_mutex = Lock()
 uranium_mutex = Lock()
+alc_sem = Semaphore(1)
+moon_sem = Semaphore(2)
+capemoscow_sem = Semaphore(5)
+#rockets_bases_sem = {"ALCANTARA": alc_sem, "MOON": moon_sem, "MOSCOW": capemoscow_sem }
 
 
 def acquire_oil():
