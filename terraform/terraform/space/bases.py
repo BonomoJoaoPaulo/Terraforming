@@ -1,5 +1,5 @@
 import globals
-from threading import Thread, Lock, Condition
+from threading import Thread
 from space.rocket import Rocket
 from random import choice
 
@@ -26,18 +26,23 @@ class SpaceBase(Thread):
         match rocket_name:
             case 'DRAGON':
                 self.uranium = self.uranium - 35
+                print(self.name)
                 if self.name == 'ALCANTARA':
+                    print("entrou no if alcantara")
                     if self.constraints[2] < self.rockets:
+                        print("entrou no if")
                         self.fuel = self.fuel - 70
                         self.rockets += 1
                         self.storage_rockets.append(Rocket('DRAGON'))
                 elif self.name == 'MOON':
                     if self.constraints[2] < self.rockets:
+                        print("entrou no if")
                         self.fuel = self.fuel - 50
                         self.rockets += 1
                         self.storage_rockets.append(Rocket('DRAGON'))
                 else:
                     if self.constraints[2] < self.rockets:
+                        print("entrou no if")
                         self.fuel = self.fuel - 100
                         self.rockets += 1
                         self.storage_rockets.append(Rocket('DRAGON'))    
@@ -93,27 +98,23 @@ class SpaceBase(Thread):
                 thread = Thread(target=self.voyageController, args=(rocket,))
                 thread.start()
 
-        rocket = self.storage_rockets.pop(0)
-        thread = Thread(target=self.voyageController, args=(rocket,))
-        thread.start()
 
 
     def voyageController(self, rocket):
         print("chamou voyage controler")
         if self.name == 'ALCANTARA':
-            rocket.voyage
             self.rockets -= 1
+            rocket.voyage
         elif self.name == 'MOON':
-            rocket.voyage
             self.rockets -= 1
+            rocket.voyage
         else:
-            rocket.voyage
             self.rockets -= 1
+            rocket.voyage
 
     def refuel_oil(self, mines_resources):
         oil = mines_resources['oil_earth']
 
-        print(oil.unities, "mine fuel")
         globals.acquire_oil()
 
         space_in_stock = self.constraints[1] - self.fuel
@@ -127,7 +128,6 @@ class SpaceBase(Thread):
     def refuel_uranium(self, mines_resources):
         uranium = mines_resources['uranium_earth']
 
-        print(uranium.unities, "mine uranium")
         globals.uranium_acquire()
 
         space_in_stock = self.constraints[0] - self.uranium
@@ -181,6 +181,14 @@ class SpaceBase(Thread):
             else:
                 return False
 
+    def Moon_has_resources_to_dragon(self):
+        if self.fuel > 50:
+            return True
+    
+    def Moon_has_resources_to_falcon(self):
+        if self.fuel > 90:
+            return True
+
     def Has_resources_to_create_lion(self):
         if self.uranium > 75:
             if self.name == "ALCANATARA":
@@ -222,30 +230,33 @@ class SpaceBase(Thread):
                 if not acquired:
 
                     while not self.verify_resources():
-                        if self.fuel < self.constraints[1]:
-                            print(f"pediu refuel f{self.name}")
+                        if self.fuel < 350:
                             self.refuel_oil(mines_resources)
-                        if self.uranium < self.constraints[0]:
-                            print(f"pediu refuel u{self.name}")
+                        if self.uranium < 90:
                             self.refuel_uranium(mines_resources)
+                            self.print_space_base_info()
                 else:
                     
                     while not self.Has_resources_to_create_lion():
-                        if self.fuel < self.constraints[1]:
-                            print(f"pediu refuel f{self.name}")
+                        if self.fuel < 400:
                             self.refuel_oil(mines_resources)
-                        if self.uranium < self.constraints[0]:
-                            print(f"pediu refuel u{self.name}")
+                        if self.uranium < 100:
                             self.refuel_uranium(mines_resources)
-                            
+                            self.print_space_base_info()
+
                     self.consume_resources_to_create_rocket('LION')
                     self.base_launch_rocket()
+                    # Se foguete nao chegar na Lua, liberar o mutex para outra base tentar enviar o Lion
                     continue
             
             else:
-                hasResources = False
-                if not hasResources:
-                    pass
+                if not self.Moon_has_resources_to_attack():
+                    # Pede para uma base enviar Lion
+                    globals.handle_lion_mutex.release()
+                    with globals.resources_got_in_moon_Lock:
+                        globals.resources_got_in_moon_Condition.wait()
+
+                # Notificar a Lua que chegou recursos
 
     
             foguetes = []
@@ -258,3 +269,12 @@ class SpaceBase(Thread):
             self.consume_resources_to_create_rocket(rocket_name)
             print('Chamou o lauch rocket')
             self.base_launch_rocket()
+
+    def Moon_has_resources_to_attack(self):
+        if self.uranium < 35:
+            return False
+        
+        if self.fuel < 50:
+            return False
+        
+        return True

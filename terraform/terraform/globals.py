@@ -1,5 +1,5 @@
 from telnetlib import SE
-from threading import Lock, Semaphore
+from threading import Condition, Lock, Semaphore
 
 #  A total alteração deste arquivo é permitida.
 #  Lembre-se de que algumas variáveis globais são setadas no arquivo simulation.py
@@ -23,6 +23,8 @@ uranium_mutex = Lock()
 handle_lion_mutex = Lock()
 moon_need_resources = False
 
+resources_got_in_moon_Lock = Lock()
+resources_got_in_moon_Condition = Condition(resources_got_in_moon_Lock)
 
 def acquire_oil():
     global oil_mutex
