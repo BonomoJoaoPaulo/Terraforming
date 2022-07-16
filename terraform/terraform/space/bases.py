@@ -23,7 +23,10 @@ class SpaceBase(Thread):
         print(f"🔭 - [{self.name}] → 🪨  {self.uranium}/{self.constraints[0]} URANIUM  ⛽ {self.fuel}/{self.constraints[1]}  🚀 {self.rockets}/{self.constraints[2]}")
     
     def consume_resources_to_create_rocket(self, rocket_name):
-        enough_resources_to_create_any_rocket.wait()
+        with lock:
+            print("chegou no wait")
+            enough_resources_to_create_any_rocket.wait()
+        print('chamou o base rocket')
         self.base_rocket_resources(rocket_name)
 
     def base_rocket_resources(self, rocket_name):
@@ -32,69 +35,118 @@ class SpaceBase(Thread):
                 if self.uranium > 35:
                     self.uranium = self.uranium - 35
                     if self.name == 'ALCANTARA' and self.fuel >= 70:
-                        globals.rocket_alc_sem.acquire()
+                        globals.rocket_alc_sem_full.acquire()
                         self.fuel = self.fuel - 70
                         self.rockets += 1
                         self.storage_rockets.append(Rocket('DRAGON'))
+                        globals.rocket_alc_sem_empty.release()
                     elif self.name == 'MOON':
                         if self.fuel >= 50:
-                            globals.rocket_moon_sem.acquire()
+                            globals.rocket_moon_sem_full.acquire()
                             self.fuel = self.fuel - 50
                             self.rockets += 1
                             self.storage_rockets.append(Rocket('DRAGON'))
+                            globals.rocket_alc_sem_empty.release()
                         else:
-                            moon_need_resources.notify()
+                            with lock:
+                                moon_need_resources.notify()
                     elif self.fuel >= 100:
-                        globals.rocket_capemoscow_sem.acquire()
+                        globals.rocket_capemoscow_sem_full.acquire()
                         self.fuel = self.fuel - 100
                         self.rockets += 1
                         self.storage_rockets.append(Rocket('DRAGON'))
+                        globals.rocket_capemoscow_sem_empty.release()
+                        
+                        
             
             case 'FALCON':
                 if self.uranium > 35:
                     self.uranium = self.uranium - 35
                     if self.name == 'ALCANTARA' and self.fuel >= 100:
-                        globals.rocket_alc_sem.acquire()
+                        globals.rocket_alc_sem_full.acquire()
                         self.fuel = self.fuel - 100
                         self.rockets += 1
                         self.storage_rockets.append(Rocket('FALCON'))
+                        globals.rocket_alc_sem_empty.release()
                     elif self.name == 'MOON':
                         if self.fuel >= 90:
-                            globals.rocket_moon_sem.acquire()
+                            globals.rocket_moon_sem_full.acquire()
                             self.fuel = self.fuel - 90
                             self.rockets += 1
-                            self.storage_rockets.append(Rocket('FALCON')) 
+                            self.storage_rockets.append(Rocket('FALCON'))
+                            globals.rocket_moon_sem_empty.release() 
                         else:
-                            moon_need_resources.notify()
+                            with lock:
+                                moon_need_resources.notify()
                     elif self.fuel >= 120:
-                        globals.rocket_capemoscow_sem.acquire()
+                        globals.rocket_capemoscow_sem_full.acquire()
                         self.fuel = self.fuel - 120
                         self.rockets += 1
                         self.storage_rockets.append(Rocket('FALCON'))
+                        globals.rocket_capemoscow_sem_empty.release()
 
             case 'LION':
                 if self.uranium > 35:
                     self.uranium = self.uranium - 35
                     if self.name == 'ALCANTARA'  and self.fuel > 100:
-                        globals.rocket_alc_sem.acquire()
+                        globals.rocket_alc_sem_full.acquire()
                         self.fuel = self.fuel - 100
                         self.rockets += 1
                         self.storage_rockets.append(Rocket('LION'))
+                        globals.rocket_alc_sem_empty.release()
                     elif self.fuel > 115:
-                        globals.rocket_capemoscow_sem.acquire()
+                        globals.rocket_capemoscow_sem_full.acquire()
                         self.fuel = self.fuel - 115
                         self.rockets += 1
                         self.storage_rockets.append(Rocket('LION'))
+                        globals.rocket_capemoscow_sem_empty.release()
             case _:
                 print("Invalid rocket name")
 
     def base_launch_rocket(self):
+        if self.name == 'ALCANTARA':
+            #decrementar o foguete de alcantara e lancar o puta
+            print(f'lancou o foguete da base {self.name}')
+            globals.rocket_alc_sem_empty.acquire()
+            rocket = self.storage_rockets.pop(0)
+            thread = Thread(target=self.voyageController, args=(rocket,))
+            thread.start()
+        elif self.name == 'MOON':
+            #decrementar o foguete de moon e lancar o puta
+            globals.rocket_moon_sem_empty.acquire()
+            rocket = self.storage_rockets.pop(0)
+            thread = Thread(target=self.voyageController, args=(rocket,))
+            thread.start()
+        else:
+            #decrementar o foguete de moscow
+            globals.rocket_capemoscow_sem_empty.acquire()
+            rocket = self.storage_rockets.pop(0)
+            thread = Thread(target=self.voyageController, args=(rocket,))
+            thread.start()
+
         rocket = self.storage_rockets.pop(0)
         thread = Thread(target=self.voyageController, args=(rocket,))
+        thread.start()
 
 
     def voyageController(self, rocket):
-        rocket.lauch
+        print("chamou voyage controler")
+        if self.name == 'ALCANTARA':
+            #decrementar o foguete de alcantara e lancar o puta
+            rocket.voyage
+            print(f'lancou o {rocket.name} da base {self.name}')
+            self.rockets -= 1
+            globals.rocket_alc_sem_full.release()
+        elif self.name == 'MOON':
+            #decrementar o foguete de moon e lancar o puta
+            rocket.voyage
+            self.rockets -= 1
+            globals.rocket_moon_sem_full.release()
+        else:
+            #decrementar o foguete de moscow
+            rocket.voyage
+            self.rockets -= 1
+            globals.rocket_capemoscow_sem_full.release()
 
     def refuel_oil(self, mines_resources):
         oil = mines_resources['oil_earth']
@@ -105,7 +157,9 @@ class SpaceBase(Thread):
         oil.unities = 0
         globals.release_oil()
         if self.fuel > globals.able_to_start:
-            enough_resources_to_create_any_rocket.notify()
+            with lock:
+                print("notificou que tem recurso")
+                enough_resources_to_create_any_rocket.notify()
         if self.fuel > self.constraints[1]:
             self.fuel = self.constraints[1]
 
@@ -138,12 +192,15 @@ class SpaceBase(Thread):
                 if self.uranium < self.constraints[0]:
                     self.refuel_uranium(mines_resources)
             else:
-                moon_need_resources.wait()
+                with lock:
+                    moon_need_resources.wait()
                 self.consume_resources_to_create_rocket('LION')
                 #lion_rocket_thread =Thread(target=rocket_lion_thread, args=(self, Lion))
                 #lion_rocket_thread.start()
                 #refuel moon with resources
     
             rocket_name = choice(['FALCON', 'DRAGON'])
+            print('Chamou o consume resources')
             self.consume_resources_to_create_rocket(rocket_name)
+            print('Chamou o lauch rocket')
             self.base_launch_rocket()
