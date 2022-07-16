@@ -26,6 +26,7 @@ moon_need_resources = False
 resources_got_in_moon_Lock = Lock()
 resources_got_in_moon_Condition = Condition(resources_got_in_moon_Lock)
 
+
 def acquire_oil():
     global oil_mutex
     oil_mutex.acquire()

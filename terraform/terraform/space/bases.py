@@ -22,26 +22,20 @@ class SpaceBase(Thread):
 
 
     def create_rocket(self, rocket_name):
-        print(f"CREATE ROCKET {rocket_name} {self.name}")
         if rocket_name == "DRAGON":
             self.uranium = self.uranium - 35
-            print(self.name)
             if self.name == 'ALCANTARA':
-                print("entrou no if alcantara")
                 if self.constraints[2] >= self.rockets:
-                    print("entrou no if")
                     self.fuel = self.fuel - 70
                     self.rockets += 1
                     self.storage_rockets.append(Rocket('DRAGON'))
             elif self.name == 'MOON':
                 if self.constraints[2] >= self.rockets:
-                    print("entrou no if")
                     self.fuel = self.fuel - 50
                     self.rockets += 1
                     self.storage_rockets.append(Rocket('DRAGON'))
             else:
                 if self.constraints[2] >= self.rockets:
-                    print("entrou no if")
                     self.fuel = self.fuel - 100
                     self.rockets += 1
                     self.storage_rockets.append(Rocket('DRAGON'))    
@@ -78,37 +72,17 @@ class SpaceBase(Thread):
                     self.rockets += 1
                     self.storage_rockets.append(Rocket('LION'))
         else:
-            print("AAAAAAAAAAAAAAAAAAAAAAAAAAa")
+            print("Erro")
         
-        print(self.rockets, self.storage_rockets)
 
     def base_launch_rocket(self):
         rocket = self.storage_rockets.pop(0)
+        self.rockets -= 1
         thread = Thread(target=self.voyageController, args=(rocket,))
         thread.start()
-        print("Thread Voyage iniciada, retornando")
-        return
-
-        if self.name == 'ALCANTARA':
-            if len(self.storage_rockets) > 0:
-                rocket = self.storage_rockets.pop(0)
-                thread = Thread(target=self.voyageController, args=(rocket,))
-                thread.start()
-        elif self.name == 'MOON':
-            if len(self.storage_rockets) > 0:
-                rocket = self.storage_rockets.pop(0)
-                thread = Thread(target=self.voyageController, args=(rocket,))
-                thread.start()
-        else:
-            if len(self.storage_rockets) > 0:
-                rocket = self.storage_rockets.pop(0)
-                thread = Thread(target=self.voyageController, args=(rocket,))
-                thread.start()
-
-
 
     def voyageController(self, rocket):
-        print(f"chamou voyage controler, {self.name}, {rocket.name}")
+        print(f"Launching Rocket {rocket.name}")
         # rocket.voyage()
 
     def refuel_oil(self, mines_resources):
@@ -214,7 +188,6 @@ class SpaceBase(Thread):
             pass
 
         while(True):
-            print(f"INICIANDO NOVO LOOP - {self.name}")
             mines_resources = globals.get_mines_ref()
 
             if self.name != 'MOON':
@@ -222,14 +195,12 @@ class SpaceBase(Thread):
 
                 # Consome as minas de recursos ate ter recursos suficientes
                 if not acquired:
-                    print(f"Not Acquired - {self.name}")
                     while not self.verify_resources():
                         self.refuel_oil(mines_resources)
                         self.refuel_uranium(mines_resources)
 
                     # self.print_space_base_info()
                 else:
-                    print(f"Acquired - {self.name}")
                     while not self.Has_resources_to_create_lion():
                         self.refuel_oil(mines_resources)
                         self.refuel_uranium(mines_resources)
@@ -242,23 +213,19 @@ class SpaceBase(Thread):
             else:
                 if not self.Moon_has_resources_to_attack():
                     # Pede para uma base enviar Lion
-                    print("Lua pedindo recursos")
                     globals.handle_lion_sem.release()
                     with globals.resources_got_in_moon_Lock:
                         globals.resources_got_in_moon_Condition.wait()
 
                 # Notificar a Lua que chegou recursos
 
-            print(f"Passou da Coleta {self.name}")
             foguetes = []
             foguetes.append("DRAGON")
             if self.Has_resources_to_create_falcon():
                 foguetes.append("FALCON")
 
             rocket_name = choice(foguetes)
-            print(f'Criando Rocket, {self.rockets}, {len(self.storage_rockets)}')
             self.create_rocket(rocket_name)
-            print(f'Criando Rocket, {self.rockets}, {len(self.storage_rockets)}')
 
             self.base_launch_rocket()
 
