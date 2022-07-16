@@ -32,20 +32,20 @@ class SpaceBase(Thread):
                 if self.uranium > 35:
                     self.uranium = self.uranium - 35
                     if self.name == 'ALCANTARA' and self.fuel >= 70:
-                        globals.alc_sem.acquire()
+                        globals.rocket_alc_sem.acquire()
                         self.fuel = self.fuel - 70
                         self.rockets += 1
                         self.storage_rockets.append(Rocket('DRAGON'))
                     elif self.name == 'MOON':
                         if self.fuel >= 50:
-                            globals.moon_sem.acquire()
+                            globals.rocket_moon_sem.acquire()
                             self.fuel = self.fuel - 50
                             self.rockets += 1
                             self.storage_rockets.append(Rocket('DRAGON'))
                         else:
                             moon_need_resources.notify()
                     elif self.fuel >= 100:
-                        globals.capemoscow_sem.acquire()
+                        globals.rocket_capemoscow_sem.acquire()
                         self.fuel = self.fuel - 100
                         self.rockets += 1
                         self.storage_rockets.append(Rocket('DRAGON'))
@@ -54,20 +54,20 @@ class SpaceBase(Thread):
                 if self.uranium > 35:
                     self.uranium = self.uranium - 35
                     if self.name == 'ALCANTARA' and self.fuel >= 100:
-                        globals.alc_sem.acquire()
+                        globals.rocket_alc_sem.acquire()
                         self.fuel = self.fuel - 100
                         self.rockets += 1
                         self.storage_rockets.append(Rocket('FALCON'))
                     elif self.name == 'MOON':
                         if self.fuel >= 90:
-                            globals.moon_sem.acquire()
+                            globals.rocket_moon_sem.acquire()
                             self.fuel = self.fuel - 90
                             self.rockets += 1
                             self.storage_rockets.append(Rocket('FALCON')) 
                         else:
                             moon_need_resources.notify()
                     elif self.fuel >= 120:
-                        globals.capemoscow_sem.acquire()
+                        globals.rocket_capemoscow_sem.acquire()
                         self.fuel = self.fuel - 120
                         self.rockets += 1
                         self.storage_rockets.append(Rocket('FALCON'))
@@ -76,12 +76,12 @@ class SpaceBase(Thread):
                 if self.uranium > 35:
                     self.uranium = self.uranium - 35
                     if self.name == 'ALCANTARA'  and self.fuel > 100:
-                        globals.alc_sem.acquire()
+                        globals.rocket_alc_sem.acquire()
                         self.fuel = self.fuel - 100
                         self.rockets += 1
                         self.storage_rockets.append(Rocket('LION'))
                     elif self.fuel > 115:
-                        globals.capemoscow_sem.acquire()
+                        globals.rocket_capemoscow_sem.acquire()
                         self.fuel = self.fuel - 115
                         self.rockets += 1
                         self.storage_rockets.append(Rocket('LION'))
@@ -95,8 +95,6 @@ class SpaceBase(Thread):
 
     def voyageController(self, rocket):
         rocket.lauch
-
-
 
     def refuel_oil(self, mines_resources):
         oil = mines_resources['oil_earth']
@@ -148,3 +146,4 @@ class SpaceBase(Thread):
     
             rocket_name = choice(['FALCON', 'DRAGON'])
             self.consume_resources_to_create_rocket(rocket_name)
+            self.base_launch_rocket()

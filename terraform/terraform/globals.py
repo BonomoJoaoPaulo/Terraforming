@@ -21,9 +21,9 @@ mines = {}
 simulation_time = None
 oil_mutex = Lock()
 uranium_mutex = Lock()
-alc_sem = Semaphore(1)
-moon_sem = Semaphore(2)
-capemoscow_sem = Semaphore(5)
+rocket_alc_sem = Semaphore(1)
+rocket_moon_sem = Semaphore(2)
+rocket_capemoscow_sem = Semaphore(5)
 #rockets_bases_sem = {"ALCANTARA": alc_sem, "MOON": moon_sem, "MOSCOW": capemoscow_sem }
 
 
