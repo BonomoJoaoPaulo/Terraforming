@@ -1,4 +1,5 @@
 from random import randrange, random
+from secrets import choice
 from time import sleep
 import globals as G
 
@@ -30,17 +31,25 @@ class Rocket:
 
     
     def voyage(self, planet): # Permitida a alteração (com ressalvas)
-
+        
         # Essa chamada de código (do_we_have_a_problem e simulation_time_voyage) não pode ser retirada.
         # Você pode inserir código antes ou depois dela e deve
         # usar essa função.
-        self.simulation_time_voyage(planet)
-        failure =  self.do_we_have_a_problem()
-        if not failure:
-            self.nuke(planet)
+
+        if self.name == "LION":
+            globals.resources_got_in_moon_Condition.notify()
+
+        else:
+            if not self.do_we_have_a_problem():
+                self.simulation_time_voyage(planet)
+                self.nuke(planet)
 
         return
 
+    def get_planet_destiny(self):
+        planets = globals.get_planets_ref()
+        destiny = choice(list(planets.keys()))
+        return planets[destiny]
 
 
     ####################################################
