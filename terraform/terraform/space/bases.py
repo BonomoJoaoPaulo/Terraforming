@@ -94,7 +94,7 @@ class SpaceBase(Thread):
 
 
     def voyageController(self, rocket):
-        rocket.
+        rocket.lauch
 
 
 
