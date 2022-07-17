@@ -17,6 +17,13 @@ class Planet(Thread):
         self.terraform -= damage
         print(f"[NUKE DETECTION] - The planet {self.name} was bombed. {self.terraform}% UNHABITABLE")
         globals.get_terraform_lock(self.name).release()
+        if self.is_planet_habitable():
+            print(f"------------{self.terraform}-------------")
+            print(f"_____________________{globals.list_planets_unhabitable}______________________")
+            globals.list_planets_unhabitable.remove(self.name)
+
+    def is_planet_habitable(self):
+        return self.terraform <= 0
 
     def print_planet_info(self):
         print(f"🪐 - [{self.name}] → {self.terraform}% UNINHABITABLE")

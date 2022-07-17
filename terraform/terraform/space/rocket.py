@@ -49,18 +49,11 @@ class Rocket:
 
         return
 
-    def get_planet_destiny(self):
+    def get_planet_destiny(self, planets_list):
         planets = globals.get_planets_ref()
-        list_planets_unhabitable = []
-        for name, planet in planets.items():
-            if planet.terraform > 0:
-                list_planets_unhabitable.append(name)
-        if len(list_planets_unhabitable) != 0:
-            destiny = choice(list_planets_unhabitable)
-            return planets[destiny]
-        else:
-            return
-
+        destiny = choice(planets_list)
+        return planets[destiny]
+    
 
     ####################################################
     #                   ATENÇÃO                        # 

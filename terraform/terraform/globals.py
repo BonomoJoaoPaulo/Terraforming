@@ -16,6 +16,7 @@ planets_semaphores = {}
 north_poles_locks = {}
 south_poles_locks = {}
 terraform_locks = {}
+list_planets_unhabitable = []
 bases = {}
 mines = {}
 simulation_time = None
@@ -86,6 +87,15 @@ def get_south_pole_lock(planet_name) -> Lock:
 def get_terraform_lock(planet_name) -> Lock:
     global terraform_locks
     return terraform_locks[planet_name]
+
+def get_unhabitable_planets():
+    global list_planets_unhabitable
+    planets = get_planets_ref()
+    
+    for name, planet in planets.items():
+        if planet.terraform > 0:
+            list_planets_unhabitable.append(name)
+    return list_planets_unhabitable
 
 def set_bases_ref(all_bases):
     global bases
