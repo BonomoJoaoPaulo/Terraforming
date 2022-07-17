@@ -20,11 +20,11 @@ class Planet(Thread):
             globals.get_planet_lock(self.name).release()
             globals.get_north_pole_lock(self.name).release()
         else:
-            globals.get_south_poles_locks(self.name).acquire()
+            globals.get_south_pole_lock(self.name).acquire()
             globals.get_planets_locks(self.name).acquire()
             self.terraform -= damage
             globals.get_planets_locks(self.name).release()
-            globals.get_south_poles_locks(self.name).release()
+            globals.get_south_pole_lock(self.name).release()
 
         print(f"[NUKE DETECTION] - The planet {self.name} was bombed. {self.terraform}% UNHABITABLE")
 

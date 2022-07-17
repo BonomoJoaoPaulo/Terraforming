@@ -99,7 +99,6 @@ class SpaceBase(Thread):
         self.fuel += consumed
         oil.unities -= consumed
 
-        print(f"Fuel: {self.fuel}")
         globals.release_oil()
 
     def refuel_uranium(self, mines_resources):
@@ -112,7 +111,6 @@ class SpaceBase(Thread):
         self.uranium += consumed
         uranium.unities -= consumed
 
-        print(f"Uranium: {self.uranium}")
         globals.uranuim_release()
 
     def verify_resources(self):
