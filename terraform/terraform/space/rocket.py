@@ -1,7 +1,7 @@
 from random import randrange, random
 from secrets import choice
 from time import sleep
-import globals as G
+import globals
 
 class Rocket:
 
@@ -18,17 +18,18 @@ class Rocket:
 
     def nuke(self, planet): # Permitida a alteração
         rocket_damage = self.damage()
-        north_pole = random.randint(0,2)
-
-        if north_pole:
-            print(f"[EXPLOSION] - The {self.name} ROCKET reached the planet {planet.name} on North Pole")
-
-            planet.nuke_detected(rocket_damage, "north")
-        else:    
+        north_lock = globals.get_north_pole_lock(self.name)
+        south_lock = globals.get_south_pole_lock(self.name)
+        if north_lock.locked():
+            south_lock.acquire()
             print(f"[EXPLOSION] - The {self.name} ROCKET reached the planet {planet.name} on South Pole")
-
             planet.nuke_detected(rocket_damage, "south")
-
+            south_lock.release()
+        else:
+            north_lock.acquire()
+            print(f"[EXPLOSION] - The {self.name} ROCKET reached the planet {planet.name} on North Pole")
+            planet.nuke_detected(rocket_damage, "north")
+            north_lock.release()
     
     def voyage(self, planet): # Permitida a alteração (com ressalvas)
         
@@ -38,7 +39,6 @@ class Rocket:
 
         if self.name == "LION":
             globals.resources_got_in_moon_Condition.notify()
-
         else:
             if not self.do_we_have_a_problem():
                 self.simulation_time_voyage(planet)

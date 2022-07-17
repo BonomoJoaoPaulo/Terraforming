@@ -83,7 +83,10 @@ class SpaceBase(Thread):
 
     def voyageController(self, rocket):
         print(f"Launching Rocket {rocket.name}")
-        # rocket.voyage()
+        print(rocket)
+        planet_to_go = rocket.get_planet_destiny()
+        print(planet_to_go)
+        rocket.voyage(planet_to_go)
 
     def refuel_oil(self, mines_resources):
         oil = mines_resources['oil_earth']
