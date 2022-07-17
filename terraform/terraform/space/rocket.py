@@ -55,8 +55,11 @@ class Rocket:
         for name, planet in planets.items():
             if planet.terraform > 0:
                 list_planets_unhabitable.append(name)
-        destiny = choice(list_planets_unhabitable)
-        return planets[destiny]
+        if len(list_planets_unhabitable) != 0:
+            destiny = choice(list_planets_unhabitable)
+            return planets[destiny]
+        else:
+            return
 
 
     ####################################################
