@@ -13,10 +13,10 @@ class Planet(Thread):
 
     def nuke_detected(self, damage):
         # Proteger com Lock para caso seja atacado nos dois polos
-        globals.get_terraform_lock().acquire()
+        globals.get_terraform_lock(self.name).acquire()
         self.terraform -= damage
         print(f"[NUKE DETECTION] - The planet {self.name} was bombed. {self.terraform}% UNHABITABLE")
-        globals.get_terraform_lock().acquire()
+        globals.get_terraform_lock(self.name).release()
 
     def print_planet_info(self):
         print(f"🪐 - [{self.name}] → {self.terraform}% UNINHABITABLE")

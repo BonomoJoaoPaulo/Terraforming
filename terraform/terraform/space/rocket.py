@@ -24,12 +24,12 @@ class Rocket:
         if north_lock.locked():
             south_lock.acquire()
             print(f"[EXPLOSION] - The {self.name} ROCKET reached the planet {planet.name} on South Pole")
-            planet.nuke_detected(rocket_damage, "south")
+            planet.nuke_detected(rocket_damage)
             south_lock.release()
         else:
             north_lock.acquire()
             print(f"[EXPLOSION] - The {self.name} ROCKET reached the planet {planet.name} on North Pole")
-            planet.nuke_detected(rocket_damage, "north")
+            planet.nuke_detected(rocket_damage)
             north_lock.release()
         globals.get_planet_semaphore(planet.name).release()
 
@@ -51,7 +51,11 @@ class Rocket:
 
     def get_planet_destiny(self):
         planets = globals.get_planets_ref()
-        destiny = choice(list(planets.keys()))
+        list_planets_unhabitable = []
+        for name, planet in planets.items():
+            if planet.terraform > 0:
+                list_planets_unhabitable.append(name)
+        destiny = choice(list_planets_unhabitable)
         return planets[destiny]
 
 
