@@ -1,3 +1,4 @@
+from time import sleep
 import globals
 from threading import Thread
 from space.rocket import Rocket
@@ -98,19 +99,20 @@ class SpaceBase(Thread):
         self.fuel += consumed
         oil.unities -= consumed
 
+        print(f"Fuel: {self.fuel}")
         globals.release_oil()
 
     def refuel_uranium(self, mines_resources):
         uranium = mines_resources['uranium_earth']
 
         globals.uranium_acquire()
-
         space_in_stock = self.constraints[0] - self.uranium
         consumed = min(space_in_stock, uranium.unities)
 
         self.uranium += consumed
         uranium.unities -= consumed
 
+        print(f"Uranium: {self.uranium}")
         globals.uranuim_release()
 
     def verify_resources(self):
@@ -191,6 +193,7 @@ class SpaceBase(Thread):
             pass
 
         while(True):
+            self.print_space_base_info()
             mines_resources = globals.get_mines_ref()
 
             if self.name != 'MOON':
@@ -198,7 +201,7 @@ class SpaceBase(Thread):
 
                 # Consome as minas de recursos ate ter recursos suficientes
                 if not acquired:
-                    while not self.verify_resources():
+                    while not self.Has_resources_to_create_falcon():
                         self.refuel_oil(mines_resources)
                         self.refuel_uranium(mines_resources)
 
@@ -222,14 +225,10 @@ class SpaceBase(Thread):
 
                 # Notificar a Lua que chegou recursos
 
-            foguetes = []
-            foguetes.append("DRAGON")
-            if self.Has_resources_to_create_falcon():
-                foguetes.append("FALCON")
+            foguetes = ["FALCON", "DRAGON"]
 
             rocket_name = choice(foguetes)
             self.create_rocket(rocket_name)
-
             self.base_launch_rocket()
 
     def Moon_has_resources_to_attack(self):
