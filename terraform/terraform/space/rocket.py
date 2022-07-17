@@ -18,6 +18,7 @@ class Rocket:
 
     def nuke(self, planet): # Permitida a alteração
         rocket_damage = self.damage()
+        globals.get_planet_semaphore(planet.name).acquire()
         north_lock = globals.get_north_pole_lock(planet.name)
         south_lock = globals.get_south_pole_lock(planet.name)
         if north_lock.locked():
@@ -30,7 +31,8 @@ class Rocket:
             print(f"[EXPLOSION] - The {self.name} ROCKET reached the planet {planet.name} on North Pole")
             planet.nuke_detected(rocket_damage, "north")
             north_lock.release()
-    
+        globals.get_planet_semaphore(planet.name).release()
+
     def voyage(self, planet): # Permitida a alteração (com ressalvas)
         
         # Essa chamada de código (do_we_have_a_problem e simulation_time_voyage) não pode ser retirada.

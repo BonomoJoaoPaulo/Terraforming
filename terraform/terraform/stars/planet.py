@@ -11,22 +11,12 @@ class Planet(Thread):
         self.terraform = terraform
         self.name = name
 
-    def nuke_detected(self, damage, pole):
+    def nuke_detected(self, damage):
         # Proteger com Lock para caso seja atacado nos dois polos
-        if pole == "north":
-            globals.get_north_pole_lock(self.name).acquire()
-            globals.get_planet_lock(self.name).acquire()
-            self.terraform -= damage
-            globals.get_planet_lock(self.name).release()
-            globals.get_north_pole_lock(self.name).release()
-        else:
-            globals.get_south_poles_locks(self.name).acquire()
-            globals.get_planets_locks(self.name).acquire()
-            self.terraform -= damage
-            globals.get_planets_locks(self.name).release()
-            globals.get_south_poles_locks(self.name).release()
-
+        globals.get_terraform_lock().acquire()
+        self.terraform -= damage
         print(f"[NUKE DETECTION] - The planet {self.name} was bombed. {self.terraform}% UNHABITABLE")
+        globals.get_terraform_lock().acquire()
 
     def print_planet_info(self):
         print(f"🪐 - [{self.name}] → {self.terraform}% UNINHABITABLE")
