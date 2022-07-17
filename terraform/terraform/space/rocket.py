@@ -18,8 +18,8 @@ class Rocket:
 
     def nuke(self, planet): # Permitida a alteração
         rocket_damage = self.damage()
-        north_lock = globals.get_north_pole_lock(self.name)
-        south_lock = globals.get_south_pole_lock(self.name)
+        north_lock = globals.get_north_pole_lock(planet.name)
+        south_lock = globals.get_south_pole_lock(planet.name)
         if north_lock.locked():
             south_lock.acquire()
             print(f"[EXPLOSION] - The {self.name} ROCKET reached the planet {planet.name} on South Pole")
@@ -38,7 +38,8 @@ class Rocket:
         # usar essa função.
 
         if self.name == "LION":
-            globals.resources_got_in_moon_Condition.notify()
+            with globals.resources_got_in_moon_Lock:
+                globals.resources_got_in_moon_Condition.notify()
         else:
             if not self.do_we_have_a_problem():
                 self.simulation_time_voyage(planet)
