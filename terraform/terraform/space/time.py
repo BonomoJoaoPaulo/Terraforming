@@ -22,8 +22,6 @@ class SimulationTime(Thread):
         while(globals.get_release_system() == False):
             pass
         while(not globals.get_program_finish()):
-            print("-=" * 50)
-            print(f"AAAAAAAAAAAAAAAAAAAAAAAA{self.current_time} year(s) have passed...")
-            print("-=" * 50)
+            print(f"\n\n ⏳ - {self.current_time} year(s) have passed...\n\n")
             self.current_time+=1
             sleep(1)

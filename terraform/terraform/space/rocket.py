@@ -24,12 +24,12 @@ class Rocket:
         if planet.name.lower() in globals.list_planets_unhabitable:
             if north_lock.locked():
                 south_lock.acquire()
-                print(f"[EXPLOSION] - The {self.name} ROCKET reached the planet {planet.name} on South Pole")
+                print(f"💥 - [EXPLOSION] - The {self.name} ROCKET reached the planet {planet.name} on South Pole")
                 planet.nuke_detected(rocket_damage)
                 south_lock.release()
             else:
                 north_lock.acquire()
-                print(f"[EXPLOSION] - The {self.name} ROCKET reached the planet {planet.name} on North Pole")
+                print(f"💥 - [EXPLOSION] - The {self.name} ROCKET reached the planet {planet.name} on North Pole")
                 planet.nuke_detected(rocket_damage)
                 north_lock.release()
         globals.get_planet_semaphore(planet.name).release()
@@ -42,10 +42,8 @@ class Rocket:
 
         if self.name == "LION" :
             if not self.do_we_have_a_problem():
-                print("LION NAO TEVE PROBLEMA")
-                # sleep(0.04)
                 with globals.resources_got_in_moon_Lock:
-                    print(f"RECURSOS CHEGARAM NA LUA{self.name} NOTIFY")
+                    print(f"🌖 - RESOURCES LANDED IN THE MOON.")
                     globals.resources_got_in_moon_Condition.notify()
             else:
                 print(f"LION da {self.name} TEVE PROBLEMAS LIBERANDO O SEMAFARO PARA ALGUEM LANCAR OUTRO LION")
@@ -84,23 +82,23 @@ class Rocket:
         return False
             
     def general_failure(self):
-        print(f"[GENERAL FAILURE] - {self.name} ROCKET id: {self.id}")
+        print(f"❌ - [GENERAL FAILURE] - {self.name} ROCKET id: {self.id}")
     
     def meteor_collision(self):
-        print(f"[METEOR COLLISION] - {self.name} ROCKET id: {self.id}")
+        print(f"☄ - [METEOR COLLISION] - {self.name} ROCKET id: {self.id}")
 
     def successfull_launch(self, base):
         if random() <= 0.1:
-            print(f"[LAUNCH FAILED] - {self.name} ROCKET id:{self.id} on {base.name}")
+            print(f"❌ - [LAUNCH FAILED] - {self.name} ROCKET id:{self.id} on {base.name}")
             return False
         return True
     
     def damage(self):
-        return random()
+        return random() * 50
 
     def launch(self, base, planet):    
         if(self.successfull_launch(base)):
-            print(f"[{self.name} - {self.id}] launched.")
+            print(f"📤- [{self.name} - {self.id}] launched.")
             self.voyage(planet)
         else:
             if self.name == "LION":

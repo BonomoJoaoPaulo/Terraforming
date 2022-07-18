@@ -88,11 +88,11 @@ class SpaceBase(Thread):
             thread.start()
 
     def LionvoyageController(self,rocket):
-        print(f"Launching LION from {self.name}")
+        #print(f"Launching LION from {self.name}")
         rocket.launch(self, "MOON")
 
     def voyageController(self, rocket):
-        print(f"Launching Rocket {rocket.name} from base{self.name}")
+        #print(f"Launching Rocket {rocket.name} from base{self.name}")
         if len(globals.list_planets_unhabitable) != 0:
             planet_to_go = rocket.get_planet_destiny(globals.get_unhabitable_planets())    
             rocket.launch(self,planet_to_go)
@@ -200,38 +200,33 @@ class SpaceBase(Thread):
             pass
 
         while not globals.get_program_finish():
-            #self.print_space_base_info()
+            self.print_space_base_info()
             mines_resources = globals.get_mines_ref()
 
             if self.name != 'MOON':
                 acquired = globals.handle_lion_sem.acquire(blocking=False)
 
                 # Consome as minas de recursos ate ter recursos suficientes
-                print(f"{self.name} ANTES DO ACQUIRE")
                 if not acquired:
                     while not self.Has_resources_to_create_falcon():
                         self.refuel_oil(mines_resources)
                         self.refuel_uranium(mines_resources)
 
-                    # self.print_space_base_info()
+                        #self.print_space_base_info()
                 else:
                     print(f"{self.name}PEGOU O SEMAFARO PARA LANCAR O LION")
                     while not self.Has_resources_to_create_lion():
-                        #with globals.oil_mutex:
-                        #    globals.oil_mutex_Condition.wait()
                         self.refuel_oil(mines_resources)
-                        #with globals.uranium_mutex:
-                        #    globals.uranium_mutex_Condition.wait()
                         self.refuel_uranium(mines_resources)
+                        
+                        #self.print_space_base_info()
 
                     self.create_rocket('LION')
                     self.base_launch_rocket()
                     # Se foguete nao chegar na Lua, liberar o mutex para outra base tentar enviar o Lion
                     continue
-                print(f"{self.name} DEPOIS DO ACQUIRE")
             
             else:
-                print(f"{self.name} ANTES DO ACQUIRE")
                 if not self.Moon_has_resources_to_attack():
                     # Pede para uma base enviar Lion
                     globals.handle_lion_sem.release()
@@ -240,15 +235,10 @@ class SpaceBase(Thread):
                         print("RECEBENDO OS RECURSOS")
                         self.print_space_base_info()
                         fuel = self.constraints[1] - self.fuel
-                        print(fuel)
                         uranium = self.constraints[0] - self.uranium
-                        print(uranium)
-                        print(min(fuel, 120))
-                        print(min(uranium,75))
                         self.fuel += min(fuel, 120)
                         self.uranium += min(uranium,75)
                         self.print_space_base_info()
-                print(f"{self.name} DEPOIS DO ACQUIRE")
                 # Notificar a Lua que chegou recursos
 
             foguetes = ["FALCON", "DRAGON"]
@@ -258,7 +248,7 @@ class SpaceBase(Thread):
             self.base_launch_rocket()
 
         globals.remove_base_from_list_activity_bases(self.name)
-        print(f"BASE {self.name} FINALIZED.")
+        print(f"🔭 - BASE {self.name} FINALIZED.")
 
     def Moon_has_resources_to_attack(self):
         if self.uranium < 35 or self.fuel < 90 :

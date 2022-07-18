@@ -102,8 +102,9 @@ def remove_planet_from_list_planets_unhabitable(planet_name):
 
     if planet_name.lower() in list_planets_unhabitable:
         list_planets_unhabitable.remove(planet_name.lower())
+        print(f"🌎 - [TERRAFORMED] {planet_name} was successfully terraformed.")
     if len(list_planets_unhabitable) == 0:
-        print("TODOS OS PLANETAS FORAM TERRAFORMADOS COM SUCESSO!")
+        print("\n\n🎉 - ALL PLANETS WERE SUCCESSFULLY TERRAFORMED!\n\n")
         set_program_finish(True)
 
 def get_unhabitable_planets():

@@ -44,4 +44,4 @@ class Pipeline(Thread):
         while(len(globals.get_activity_bases()) != 0):
             self.produce()
         
-        print(f"OIL MINE FINALIZED IN {self.location}.")
+        print(f"🏭 - OIL MINE FINALIZED IN {self.location}.")
