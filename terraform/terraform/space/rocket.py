@@ -95,7 +95,7 @@ class Rocket:
         return True
     
     def damage(self):
-        return random()
+        return random() * 50
 
     def launch(self, base, planet):    
         if(self.successfull_launch(base)):
@@ -105,5 +105,3 @@ class Rocket:
             if self.name == "LION":
                 print(f"LION FALHOU NO LANCAMENTO LIBERANDO O SEMAFARO PARA ALGUEM LANCAR OUTRO LION")
                 globals.handle_lion_sem.release()
-
-

@@ -42,3 +42,5 @@ class StoreHouse(Thread):
 
         while(not globals.get_program_finish()):
             self.produce()
+        
+        print(f"URANIUM MINE FINALIZED IN {self.location}.")

@@ -139,7 +139,12 @@ def get_simulation_time():
 
 def set_program_finish(finished):
     global terraformed
+    global resources_got_in_moon_Lock
+    global resources_got_in_moon_Condition
+    
     terraformed = finished
+    with resources_got_in_moon_Lock:
+        resources_got_in_moon_Condition.notify_all()
 
 def get_program_finish():
     global terraformed

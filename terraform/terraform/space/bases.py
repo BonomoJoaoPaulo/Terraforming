@@ -206,6 +206,7 @@ class SpaceBase(Thread):
                 acquired = globals.handle_lion_sem.acquire(blocking=False)
 
                 # Consome as minas de recursos ate ter recursos suficientes
+                print(f"{self.name} ANTES DO ACQUIRE")
                 if not acquired:
                     while not self.Has_resources_to_create_falcon():
                         self.refuel_oil(mines_resources)
@@ -222,8 +223,10 @@ class SpaceBase(Thread):
                     self.base_launch_rocket()
                     # Se foguete nao chegar na Lua, liberar o mutex para outra base tentar enviar o Lion
                     continue
+                print(f"{self.name} DEPOIS DO ACQUIRE")
             
             else:
+                print(f"{self.name} ANTES DO ACQUIRE")
                 if not self.Moon_has_resources_to_attack():
                     # Pede para uma base enviar Lion
                     globals.handle_lion_sem.release()
@@ -240,7 +243,7 @@ class SpaceBase(Thread):
                         self.fuel += min(fuel, 120)
                         self.uranium += min(uranium,75)
                         self.print_space_base_info()
-
+                print(f"{self.name} DEPOIS DO ACQUIRE")
                 # Notificar a Lua que chegou recursos
 
             foguetes = ["FALCON", "DRAGON"]
@@ -248,6 +251,8 @@ class SpaceBase(Thread):
             rocket_name = choice(foguetes)
             self.create_rocket(rocket_name)
             self.base_launch_rocket()
+        
+        print(f"BASE {self.name} FINALIZED.")
 
     def Moon_has_resources_to_attack(self):
         if self.uranium < 35 or self.fuel < 90 :

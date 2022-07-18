@@ -42,3 +42,5 @@ class Pipeline(Thread):
 
         while(not globals.get_program_finish()):
             self.produce()
+        
+        print(f"OIL MINE FINALIZED IN {self.location}.")
