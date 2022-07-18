@@ -93,8 +93,8 @@ class SpaceBase(Thread):
 
     def voyageController(self, rocket):
         print(f"Launching Rocket {rocket.name} from base{self.name}")
-        planet_to_go = rocket.get_planet_destiny(globals.get_unhabitable_planets())    
         if len(globals.list_planets_unhabitable) != 0:
+            planet_to_go = rocket.get_planet_destiny(globals.get_unhabitable_planets())    
             rocket.launch(self,planet_to_go)
 
     def refuel_oil(self, mines_resources):
@@ -216,7 +216,11 @@ class SpaceBase(Thread):
                 else:
                     print(f"{self.name}PEGOU O SEMAFARO PARA LANCAR O LION")
                     while not self.Has_resources_to_create_lion():
+                        #with globals.oil_mutex:
+                        #    globals.oil_mutex_Condition.wait()
                         self.refuel_oil(mines_resources)
+                        #with globals.uranium_mutex:
+                        #    globals.uranium_mutex_Condition.wait()
                         self.refuel_uranium(mines_resources)
 
                     self.create_rocket('LION')

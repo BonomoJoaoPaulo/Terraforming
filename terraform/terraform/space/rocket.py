@@ -21,16 +21,17 @@ class Rocket:
         globals.get_planet_semaphore(planet.name).acquire()
         north_lock = globals.get_north_pole_lock(planet.name)
         south_lock = globals.get_south_pole_lock(planet.name)
-        if north_lock.locked():
-            south_lock.acquire()
-            print(f"[EXPLOSION] - The {self.name} ROCKET reached the planet {planet.name} on South Pole")
-            planet.nuke_detected(rocket_damage)
-            south_lock.release()
-        else:
-            north_lock.acquire()
-            print(f"[EXPLOSION] - The {self.name} ROCKET reached the planet {planet.name} on North Pole")
-            planet.nuke_detected(rocket_damage)
-            north_lock.release()
+        if planet.name.lower() in globals.list_planets_unhabitable:
+            if north_lock.locked():
+                south_lock.acquire()
+                print(f"[EXPLOSION] - The {self.name} ROCKET reached the planet {planet.name} on South Pole")
+                planet.nuke_detected(rocket_damage)
+                south_lock.release()
+            else:
+                north_lock.acquire()
+                print(f"[EXPLOSION] - The {self.name} ROCKET reached the planet {planet.name} on North Pole")
+                planet.nuke_detected(rocket_damage)
+                north_lock.release()
         globals.get_planet_semaphore(planet.name).release()
 
     def voyage(self, planet): # Permitida a alteração (com ressalvas)

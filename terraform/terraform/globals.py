@@ -21,7 +21,9 @@ bases = {}
 mines = {}
 simulation_time = None
 oil_mutex = Lock()
+oil_mutex_Condition = Condition(oil_mutex)
 uranium_mutex = Lock()
+uranium_mutex_Condition = Condition(uranium_mutex)
 handle_lion_sem = Semaphore(0)
 moon_need_resources = False
 
@@ -141,10 +143,18 @@ def set_program_finish(finished):
     global terraformed
     global resources_got_in_moon_Lock
     global resources_got_in_moon_Condition
-    
+    #global oil_mutex
+    #global oil_mutex_Condition
+    #global uranium_mutex
+    #global uranium_mutex_Condition
+
     terraformed = finished
     with resources_got_in_moon_Lock:
         resources_got_in_moon_Condition.notify_all()
+    #with oil_mutex:
+    #    oil_mutex_Condition.notify_all()
+    #with uranium_mutex:
+    #    uranium_mutex_Condition.notify_all()
 
 def get_program_finish():
     global terraformed
