@@ -23,12 +23,12 @@ class Rocket:
         south_lock = globals.get_south_pole_lock(planet.name)
         if north_lock.locked():
             south_lock.acquire()
-            print(f"[EXPLOSION] - The {self.name} ROCKET reached the planet {planet.name} on South Pole")
+            #print(f"[EXPLOSION] - The {self.name} ROCKET reached the planet {planet.name} on South Pole")
             planet.nuke_detected(rocket_damage)
             south_lock.release()
         else:
             north_lock.acquire()
-            print(f"[EXPLOSION] - The {self.name} ROCKET reached the planet {planet.name} on North Pole")
+            #print(f"[EXPLOSION] - The {self.name} ROCKET reached the planet {planet.name} on North Pole")
             planet.nuke_detected(rocket_damage)
             north_lock.release()
         globals.get_planet_semaphore(planet.name).release()
@@ -92,5 +92,5 @@ class Rocket:
 
     def launch(self, base, planet):
         if(self.successfull_launch(base)):
-            print(f"[{self.name} - {self.id}] launched.")
+            # print(f"[{self.name} - {self.id}] launched.")
             self.voyage(planet)        

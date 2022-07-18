@@ -88,13 +88,18 @@ def get_terraform_lock(planet_name) -> Lock:
     global terraform_locks
     return terraform_locks[planet_name]
 
+def append_in_unhabitale_planets(planet_name):
+    global list_planets_unhabitable
+    list_planets_unhabitable.append(planet_name.lower())
+
+def remove_planet_from_list_planets_unhabitable(planet_name):
+    global list_planets_unhabitable
+    global release_system
+    if planet_name.lower() in list_planets_unhabitable:
+        list_planets_unhabitable.remove(planet_name.lower())
+
 def get_unhabitable_planets():
     global list_planets_unhabitable
-    planets = get_planets_ref()
-    
-    for name, planet in planets.items():
-        if planet.terraform > 0:
-            list_planets_unhabitable.append(name)
     return list_planets_unhabitable
 
 def set_bases_ref(all_bases):
