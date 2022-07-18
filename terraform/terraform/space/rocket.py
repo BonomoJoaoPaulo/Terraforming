@@ -44,7 +44,6 @@ class Rocket:
                     #caso o foguete lion nao teve problemas em sua viagem significa que chegou na lua com os recursos e notifica a base da lua para ela pegar os recursos
                     globals.resources_got_in_moon_Condition.notify()
             else:
-                print(f"LION TEVE PROBLEMAS LIBERANDO O SEMAFARO PARA ALGUEM LANCAR OUTRO LION")
                 #caso o foguete tenha sofrido algum problema o semafaro tem que ser liberado tambem
                 globals.handle_lion_sem.release()
         else:
