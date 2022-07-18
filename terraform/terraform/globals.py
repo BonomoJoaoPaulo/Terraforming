@@ -32,6 +32,8 @@ resources_got_in_moon_Condition = Condition(resources_got_in_moon_Lock)
 
 terraformed = False
 
+list_activity_bases = []
+
 def acquire_oil():
     global oil_mutex
     oil_mutex.acquire()
@@ -101,11 +103,25 @@ def remove_planet_from_list_planets_unhabitable(planet_name):
     if planet_name.lower() in list_planets_unhabitable:
         list_planets_unhabitable.remove(planet_name.lower())
     if len(list_planets_unhabitable) == 0:
+        print("TODOS OS PLANETAS FORAM TERRAFORMADOS COM SUCESSO!")
         set_program_finish(True)
 
 def get_unhabitable_planets():
     global list_planets_unhabitable
     return list_planets_unhabitable
+
+def append_in_list_activity_bases(base_name):
+    global list_activity_bases
+    list_activity_bases.append(base_name.lower())
+
+def remove_base_from_list_activity_bases(base_name):
+    global list_activity_bases
+    if base_name.lower() in list_activity_bases:
+        list_activity_bases.remove(base_name.lower())
+
+def get_activity_bases():
+    global list_activity_bases
+    return list_activity_bases
 
 def set_bases_ref(all_bases):
     global bases

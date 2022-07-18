@@ -96,7 +96,7 @@ class Rocket:
         return True
     
     def damage(self):
-        return random() * 50
+        return random()
 
     def launch(self, base, planet):    
         if(self.successfull_launch(base)):

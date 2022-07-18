@@ -193,12 +193,13 @@ class SpaceBase(Thread):
         globals.acquire_print()
         self.print_space_base_info()
         globals.release_print()
+        globals.append_in_list_activity_bases(self.name)
 
         self.storage_rockets = []
         while(globals.get_release_system() == False):
             pass
 
-        while(not globals.get_program_finish()):
+        while not globals.get_program_finish():
             #self.print_space_base_info()
             mines_resources = globals.get_mines_ref()
 
@@ -255,7 +256,8 @@ class SpaceBase(Thread):
             rocket_name = choice(foguetes)
             self.create_rocket(rocket_name)
             self.base_launch_rocket()
-        
+
+        globals.remove_base_from_list_activity_bases(self.name)
         print(f"BASE {self.name} FINALIZED.")
 
     def Moon_has_resources_to_attack(self):

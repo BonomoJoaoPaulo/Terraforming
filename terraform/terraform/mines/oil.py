@@ -1,3 +1,4 @@
+from pickle import TRUE
 from threading import Thread
 from time import sleep
 
@@ -40,7 +41,7 @@ class Pipeline(Thread):
         while(globals.get_release_system() == False):
             pass
 
-        while(not globals.get_program_finish()):
+        while(len(globals.get_activity_bases()) != 0):
             self.produce()
         
         print(f"OIL MINE FINALIZED IN {self.location}.")

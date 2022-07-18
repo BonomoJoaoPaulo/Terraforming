@@ -40,7 +40,7 @@ class StoreHouse(Thread):
         while(globals.get_release_system() == False):
             pass
 
-        while(not globals.get_program_finish()):
+        while(len(globals.get_activity_bases()) != 0):
             self.produce()
         
         print(f"URANIUM MINE FINALIZED IN {self.location}.")
