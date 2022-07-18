@@ -12,7 +12,6 @@ from threading import Condition, Lock, Semaphore
 release_system = False
 mutex_print = Lock()
 planets = {}
-planets_semaphores = {}
 north_poles_locks = {}
 south_poles_locks = {}
 terraform_locks = {}
@@ -67,19 +66,14 @@ def get_planets_ref():
     return planets
 
 def create_planet_and_poles_locks(planet_name):
-    global planets_semaphores
     global north_poles_locks
     global south_poles_locks
     global terraform_locks
 
-    planets_semaphores[planet_name] = Semaphore(2)
     north_poles_locks[planet_name] = Lock()
     south_poles_locks[planet_name] = Lock()
     terraform_locks[planet_name] = Lock()
 
-def get_planet_semaphore(planet_name) -> Semaphore:
-    global planets_semaphores
-    return planets_semaphores[planet_name]
 
 def get_north_pole_lock(planet_name) -> Lock:
     global north_poles_locks

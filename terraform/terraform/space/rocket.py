@@ -16,12 +16,15 @@ class Rocket:
             self.uranium_cargo = 0
             
 
-    def nuke(self, planet): # Permitida a alteração
+    def nuke(self, planet):
         rocket_damage = self.damage()
-        globals.get_planet_semaphore(planet.name).acquire()
+        # Variaveis a receber os Locks de cada polo do planeta.
         north_lock = globals.get_north_pole_lock(planet.name)
         south_lock = globals.get_south_pole_lock(planet.name)
+        # Verifica se o planeta ainda esta na lista de planetas inabitaveis.
         if planet.name.lower() in globals.list_planets_unhabitable:
+            # Verifica se o polo norte esta "lockado". Se sim, a explosao ocorrera no polo sul.
+            # Eh feito um acquire e depois um release no lock do polo do planeta a ser atingido.
             if north_lock.locked():
                 south_lock.acquire()
                 print(f"💥 - [EXPLOSION] - The {self.name} ROCKET reached the planet {planet.name} on South Pole")
@@ -31,15 +34,10 @@ class Rocket:
                 north_lock.acquire()
                 print(f"💥 - [EXPLOSION] - The {self.name} ROCKET reached the planet {planet.name} on North Pole")
                 planet.nuke_detected(rocket_damage)
-                north_lock.release()
-        globals.get_planet_semaphore(planet.name).release()
+                north_lock.release() 
 
-    def voyage(self, planet): # Permitida a alteração (com ressalvas)
-        
-        # Essa chamada de código (do_we_have_a_problem e simulation_time_voyage) não pode ser retirada.
-        # Você pode inserir código antes ou depois dela e deve
-        # usar essa função.
-
+    def voyage(self, planet):
+        # Verifica se o rocket eh um LION (ja que a logica de sua viagem eh diferente dos demais).
         if self.name == "LION" :
             if not self.do_we_have_a_problem():
                 with globals.resources_got_in_moon_Lock:
@@ -55,8 +53,12 @@ class Rocket:
 
         return
 
+    # Essa funcao eh responsavel por pegar o planeta destino do foguete.
     def get_planet_destiny(self, planets_list):
+        # planets recebe as referencias de todos os planetas.
         planets = globals.get_planets_ref()
+        # destiny escolhe aleatoriamente um planeta que esteja em planets_list (que no caso eh passado a lista de
+        # planetas nao terraformados ainda).
         destiny = choice(planets_list)
         return planets[destiny]
     
@@ -94,7 +96,10 @@ class Rocket:
         return True
     
     def damage(self):
-        return random() * 50
+        return random()
+
+    # Foi preciso uma pequena alteracao nessa funcao para o 
+    # funcionamento correto do LION.
 
     def launch(self, base, planet):    
         if(self.successfull_launch(base)):
