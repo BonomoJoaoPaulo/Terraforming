@@ -61,15 +61,15 @@ class SpaceBase(Thread):
                     self.storage_rockets.append(Rocket('FALCON'))
 
         elif rocket_name == "LION":
-            self.uranium = self.uranium - 35
-            if self.constraints[2] >= self.rockets:
-                self.fuel = self.fuel - 100
+            self.uranium = self.uranium - 75
+            if self.name == "ALCANTARA" and self.constraints[2] >= self.rockets:
+                self.fuel = self.fuel - 220
                 self.rockets += 1
                 self.storage_rockets.append(Rocket('LION'))
 
             else:
                 if self.constraints[2] >= self.rockets:
-                    self.fuel = self.fuel - 115
+                    self.fuel = self.fuel - 235
                     self.rockets += 1
                     self.storage_rockets.append(Rocket('LION'))
         else:
@@ -84,11 +84,15 @@ class SpaceBase(Thread):
 
     def voyageController(self, rocket):
         print(f"Launching Rocket {rocket.name}")
-        print(rocket)
         planet_to_go = rocket.get_planet_destiny(globals.get_unhabitable_planets())
-        print(planet_to_go)
+        if rocket.name == "LION":
+            rocket.launch(self,"MOON")     
         if len(globals.list_planets_unhabitable) != 0:
-            rocket.launch(self,planet_to_go)
+            if self.name == "MOON":
+                print(f"LUA LANCOU O FOGUETE{rocket.name}")
+                rocket.launch(self, planet_to_go)
+            else:
+                rocket.launch(self,planet_to_go)
 
     def refuel_oil(self, mines_resources):
         oil = mines_resources['oil_earth']
@@ -192,7 +196,7 @@ class SpaceBase(Thread):
             pass
 
         while(not globals.get_program_finish()):
-            self.print_space_base_info()
+            #self.print_space_base_info()
             mines_resources = globals.get_mines_ref()
 
             if self.name != 'MOON':
@@ -216,11 +220,14 @@ class SpaceBase(Thread):
                     continue
             
             else:
-                if not self.Moon_has_resources_to_attack():
+                while not self.Moon_has_resources_to_attack():
                     # Pede para uma base enviar Lion
                     globals.handle_lion_sem.release()
                     with globals.resources_got_in_moon_Lock:
                         globals.resources_got_in_moon_Condition.wait()
+                        self.fuel += 120
+                        self.uranium += 75
+                        self.print_space_base_info()
 
                 # Notificar a Lua que chegou recursos
 
@@ -231,10 +238,8 @@ class SpaceBase(Thread):
             self.base_launch_rocket()
 
     def Moon_has_resources_to_attack(self):
-        if self.uranium < 35:
+        if self.uranium < 35 and self.fuel < 50 :
             return False
-        
-        if self.fuel < 50:
-            return False
-        
-        return True
+        else:
+            print ("LUA QUER RECURSOS")
+            return True

@@ -39,9 +39,12 @@ class Rocket:
         # Você pode inserir código antes ou depois dela e deve
         # usar essa função.
 
-        if self.name == "LION":
-            with globals.resources_got_in_moon_Lock:
-                globals.resources_got_in_moon_Condition.notify()
+        if self.name == "LION" :
+            if not self.do_we_have_a_problem():
+                with globals.resources_got_in_moon_Lock:
+                    globals.resources_got_in_moon_Condition.notify()
+            else:
+                globals.handle_lion_sem.release()
         else:
             if not self.do_we_have_a_problem():
                 self.simulation_time_voyage(planet)
