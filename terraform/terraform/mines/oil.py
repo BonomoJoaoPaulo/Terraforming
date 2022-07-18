@@ -20,13 +20,12 @@ class Pipeline(Thread):
         self.constraint = constraint
 
     def print_pipeline(self):
-        # print(
-        #     f"🔨 - [{self.location}] - {self.unities} oil unities are produced."
-        # )
+        print(f"🔨 - [{self.location}] - {self.unities} oil unities are produced.")
         pass
 
     def produce(self):
         if(self.unities < self.constraint):
+            # Protegemos com Lock para evitar condicao de corrida (ALTERACAO PERMITIDA).
             globals.acquire_oil()
             self.unities += 17
             globals.release_oil()
@@ -40,8 +39,10 @@ class Pipeline(Thread):
 
         while(globals.get_release_system() == False):
             pass
-
+        
+        # Encerra as threads quando nao houver mais nenhuma base ativa.
         while(len(globals.get_activity_bases()) != 0):
             self.produce()
         
+        # print adicionado para facilitar correcao e visualizacao do codigo.
         print(f"🏭 - OIL MINE FINALIZED IN {self.location}.")
