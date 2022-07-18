@@ -41,9 +41,13 @@ class Rocket:
 
         if self.name == "LION" :
             if not self.do_we_have_a_problem():
+                print("LION NAO TEVE PROBLEMA")
+                # sleep(0.04)
                 with globals.resources_got_in_moon_Lock:
+                    print(f"RECURSOS CHEGARAM NA LUA{self.name} NOTIFY")
                     globals.resources_got_in_moon_Condition.notify()
             else:
+                print(f"LION da {self.name} TEVE PROBLEMAS LIBERANDO O SEMAFARO PARA ALGUEM LANCAR OUTRO LION")
                 globals.handle_lion_sem.release()
         else:
             if not self.do_we_have_a_problem():
@@ -93,7 +97,13 @@ class Rocket:
     def damage(self):
         return random()
 
-    def launch(self, base, planet):
+    def launch(self, base, planet):    
         if(self.successfull_launch(base)):
             print(f"[{self.name} - {self.id}] launched.")
-            self.voyage(planet)        
+            self.voyage(planet)
+        else:
+            if self.name == "LION":
+                print(f"LION FALHOU NO LANCAMENTO LIBERANDO O SEMAFARO PARA ALGUEM LANCAR OUTRO LION")
+                globals.handle_lion_sem.release()
+
+
