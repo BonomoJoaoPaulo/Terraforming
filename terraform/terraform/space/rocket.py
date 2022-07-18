@@ -41,10 +41,11 @@ class Rocket:
         if self.name == "LION" :
             if not self.do_we_have_a_problem():
                 with globals.resources_got_in_moon_Lock:
-                    print(f"🌖 - RESOURCES LANDED IN THE MOON.")
+                    #caso o foguete lion nao teve problemas em sua viagem significa que chegou na lua com os recursos e notifica a base da lua para ela pegar os recursos
                     globals.resources_got_in_moon_Condition.notify()
             else:
-                print(f"LION da {self.name} TEVE PROBLEMAS LIBERANDO O SEMAFARO PARA ALGUEM LANCAR OUTRO LION")
+                print(f"LION TEVE PROBLEMAS LIBERANDO O SEMAFARO PARA ALGUEM LANCAR OUTRO LION")
+                #caso o foguete tenha sofrido algum problema o semafaro tem que ser liberado tambem
                 globals.handle_lion_sem.release()
         else:
             if not self.do_we_have_a_problem():
@@ -106,6 +107,6 @@ class Rocket:
             print(f"📤- [{self.name} - {self.id}] launched.")
             self.voyage(planet)
         else:
-            if self.name == "LION":
+            if self.name == "LION": #caso o foguete lion teve problema no lancamento o semafaro para enviar recursos a lua sera liberado
                 print(f"LION FALHOU NO LANCAMENTO LIBERANDO O SEMAFARO PARA ALGUEM LANCAR OUTRO LION")
                 globals.handle_lion_sem.release()
