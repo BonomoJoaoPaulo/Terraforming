@@ -191,7 +191,7 @@ class SpaceBase(Thread):
         while(globals.get_release_system() == False):
             pass
 
-        while(True):
+        while(not globals.get_program_finish()):
             self.print_space_base_info()
             mines_resources = globals.get_mines_ref()
 

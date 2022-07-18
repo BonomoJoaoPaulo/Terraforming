@@ -28,6 +28,7 @@ moon_need_resources = False
 resources_got_in_moon_Lock = Lock()
 resources_got_in_moon_Condition = Condition(resources_got_in_moon_Lock)
 
+terraformed = False
 
 def acquire_oil():
     global oil_mutex
@@ -94,9 +95,11 @@ def append_in_unhabitale_planets(planet_name):
 
 def remove_planet_from_list_planets_unhabitable(planet_name):
     global list_planets_unhabitable
-    global release_system
+
     if planet_name.lower() in list_planets_unhabitable:
         list_planets_unhabitable.remove(planet_name.lower())
+    if len(list_planets_unhabitable) == 0:
+        set_program_finish(True)
 
 def get_unhabitable_planets():
     global list_planets_unhabitable
@@ -133,3 +136,11 @@ def set_simulation_time(time):
 def get_simulation_time():
     global simulation_time
     return simulation_time
+
+def set_program_finish(finished):
+    global terraformed
+    terraformed = finished
+
+def get_program_finish():
+    global terraformed
+    return terraformed
