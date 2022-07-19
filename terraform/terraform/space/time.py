@@ -24,9 +24,7 @@ class SimulationTime(Thread):
 
         # Alteracao permitida para adicionar uma condicao que termine o while.
         while(not globals.get_program_finish()):
-            print("++++++++++++++++++++++++++++++++++++++++++++++")
             print(f"\n\n ⏳ - {self.current_time} year(s) have passed...\n\n")
-            print("++++++++++++++++++++++++++++++++++++++++++")
             self.current_time+=1
             sleep(1)
 
