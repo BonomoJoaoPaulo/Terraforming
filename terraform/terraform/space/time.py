@@ -21,10 +21,14 @@ class SimulationTime(Thread):
     def run(self):
         while(globals.get_release_system() == False):
             pass
+
+        # Alteracao permitida para adicionar uma condicao que termine o while.
         while(not globals.get_program_finish()):
             print("++++++++++++++++++++++++++++++++++++++++++++++")
             print(f"\n\n ⏳ - {self.current_time} year(s) have passed...\n\n")
             print("++++++++++++++++++++++++++++++++++++++++++")
             self.current_time+=1
             sleep(1)
-        print(f"took {self.current_time} year to terraform all planets")
+
+        # Print para visualizar mais facilmente quantos anos se passaram ao termino do programa.
+        print(f"\n\n 🏅 - THE ENDURANCE PROJECT HAS FINESHED! {self.current_time} year(s) have passed.\n\n")
